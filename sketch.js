@@ -1,74 +1,53 @@
-var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
-var packageBody,ground
-const Engine = Matter.Engine;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
-const Body = Matter.Body;
+var car, wall; 
+var safeimg,lethalimg,averageimg,mainimg;
+var speed, weight; 
 
-function preload()
-{
-	helicopterIMG=loadImage("helicopter.png")
-	packageIMG=loadImage("package.png")
+function preload(){
+
+ mainimg=loadImage("main.jpg");
+ safeimg=loadImage("safe.jpg");
+ averageimg=loadImage("average.jpg");
+ lethalimg=loadImage("lethal.jpg");
+
 }
 
 function setup() {
-	var canvas = createCanvas(400,400);
-    engine = Engine.create();
-    world = engine.world;
 
-    box1 = new Box(200,300,50,50);
-    box2 = new Box(240,100,50,100);
-    ground = new Ground(200,height,400,20)
-}
+  createCanvas(1400,400);
 
-
-	createCanvas(800, 700);
-	rectMode(CENTER);
-	
-
-	packageSprite=createSprite(width/2, 80, 10,10);
-	packageSprite.addImage(packageIMG)
-	packageSprite.scale=0.2
-
-	helicopterSprite=createSprite(width/2, 200, 10,10);
-	helicopterSprite.addImage(helicopterIMG)
-	helicopterSprite.scale=0.6
-
-	groundSprite=createSprite(width/2, height-35, width,10);
-	groundSprite.shapeColor=color(255)
-
-
-	engine = Engine.create();
-	world = engine.world;
-
-	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:3, isStatic:true});
-	World.add(world, packageBody);
-	
-
-	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
- 	World.add(world, ground);
-
-
-	Engine.run(engine);
+  speed=random(30,100);
+  weight=random(700,2500);
   
+  car=createSprite(50, 200, 50,50);
+  car.shapeColor="white";
+  car.addImage(mainimg);
+  car.scale=0.5;
+  car.addAnimation("safe",safeimg);
+  car.addAnimation("average",averageimg);
+  car.addAnimation("lethal",lethalimg);
+  car.velocityX=speed;
 
+  wall=createSprite(1340, 200, 40, 200);
+  wall.shapeColor="grey";
 
+}
 
 function draw() {
-  rectMode(CENTER);
-  background(0);
-  packageSprite.x= packageBody.position.x 
-  packageSprite.y= packageBody.position.y 
-  drawSprites();
- 
-}
+  background("black");
 
-function keyPressed() {
- if (keyCode === DOWN_ARROW) {
-    restitution=packageBody;
+  if (car.x - wall.x < wall.width/2 + car.width/2
+    && wall.x - car.x < wall.width/2 + car.width/2){
+    car.velocityX=0;
+
+    if(((0.5*weight*speed*speed)/22500)>180){
+      car.changeAnimation("lethal",lethalimg);
+    }else if(((0.5*weight*speed*speed)/22500)<80){
+      car.changeAnimation("safe",safeimg);
+    }else if(((0.5*weight*speed*speed)/22500)<180 && ((0.5*weight*speed*speed)/22500)>80){
+      car.changeAnimation("average",averageimg);
+    }
+
   }
+
+  drawSprites();
 }
-
-
-
