@@ -1,53 +1,40 @@
-var car, wall; 
-var safeimg,lethalimg,averageimg,mainimg;
-var speed, weight; 
+const Engine = Matter.Engine;
+const World= Matter.World;
+const Bodies = Matter.Bodies;
 
-function preload(){
+var engine, world;
+var log1,log2,log3,papper;
 
- mainimg=loadImage("main.jpg");
- safeimg=loadImage("safe.jpg");
- averageimg=loadImage("average.jpg");
- lethalimg=loadImage("lethal.jpg");
+function setup(){
+    var canvas = createCanvas(1200,400);
+    engine = Engine.create();
+    world = engine.world;
 
-}
-
-function setup() {
-
-  createCanvas(1400,400);
-
-  speed=random(30,100);
-  weight=random(700,2500);
-  
-  car=createSprite(50, 200, 50,50);
-  car.shapeColor="white";
-  car.addImage(mainimg);
-  car.scale=0.5;
-  car.addAnimation("safe",safeimg);
-  car.addAnimation("average",averageimg);
-  car.addAnimation("lethal",lethalimg);
-  car.velocityX=speed;
-
-  wall=createSprite(1340, 200, 40, 200);
-  wall.shapeColor="grey";
+    ground = new Ground(600,height,1200,20);
+    pig1=new Pig(810,350);
+    pig2=new Pig(810,220);
+    log1=new Log(810,260,300,PI/2);
+    log2=new Log(810,180,300,PI/2);
+    log3=new Log(760,120,150,PI/2);
+    papper=new Bird(100,100)
 
 }
 
-function draw() {
-  background("black");
+function draw(){
+    background(0);
+    Engine.update(engine);
+    log1.display();
+    pig2.display();
+    log2.display();
+    log3.display();
+    papper.display();
+    ground.display();
+};
 
-  if (car.x - wall.x < wall.width/2 + car.width/2
-    && wall.x - car.x < wall.width/2 + car.width/2){
-    car.velocityX=0;
+function keyPressed();
 
-    if(((0.5*weight*speed*speed)/22500)>180){
-      car.changeAnimation("lethal",lethalimg);
-    }else if(((0.5*weight*speed*speed)/22500)<80){
-      car.changeAnimation("safe",safeimg);
-    }else if(((0.5*weight*speed*speed)/22500)<180 && ((0.5*weight*speed*speed)/22500)>80){
-      car.changeAnimation("average",averageimg);
-    }
+if(keyCode === UP_ARROW){
 
-  }
+Matter.Body.applyForce(paperObject.body,paperObject.body.position,{x:85,y:85});
 
-  drawSprites();
-}
+};
